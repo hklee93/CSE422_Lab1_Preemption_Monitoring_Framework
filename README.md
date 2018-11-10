@@ -55,7 +55,7 @@ When we open the schedule monitor, we register the tracker as the head of the li
 - *wait_time* = previous preempted entry's scheduled in time - previous preempted entry's scheduled out time
 
 #### * Visual explanation:
-        [out			in]    [out			in]
+        [out			in]         [out			in]
     |******|			|**************|			|*************|
     |----------------------------------------------------------------------|
 Treating a complete bracket as one node, we see that the wait time of the current node is previous entry's scheduled in time minus the previous entry's scheduled out time. The run time of the current node is current preempted time minus the previous entry's scheduled in time. We append the node to the list. Then in the *monitor_sched_in* function as the process gets scheduled back in, we record the cpu number that it runs on in and record the scheduled in time.
