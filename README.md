@@ -1,5 +1,5 @@
 # # Spring 2018 :: CSE 422S Lab 1 - Preemption Monitoring Framework
-This lab shows some ways to perform monitoring tasks, using kernel modules, scheduler notifications, and file system operations to communicate information betweeen user-space and kernel-space.
+This lab shows some ways to perform monitoring tasks, using kernel modules, scheduler notifications, and file system operations to communicate information between user-space and kernel-space.
 
 # # Objectives
 1. Use a kernel module to dynamically add code to a running kernel.
@@ -46,10 +46,10 @@ This lab shows some ways to perform monitoring tasks, using kernel modules, sche
 - unsigned long long *wait_time* - time it waits before running again
 - unsigned long long *schedin_time* - time it gets scheduled in
 - unsigned long long *schedout_time* - time it gets scheduled out
-- unsigned int *on_which_core* - which cpu is it running on
+- unsigned int *on_which_core* - which CPU is it running on
 - char* *name* - name of the task that preempts the process
 
-When we open the schedule monitor, we register the tracker as the head of the list of the entries. Then as the process gets preempted, in the *monitor_sched_out* function, we create a new entry for the process, save the current time in *schedout_time*, record the name of the task that preempted the process, and instantiate the *on_core_time* and *wait_time* as following:
+When we open the schedule monitor, we register the tracker as the head of the list of the entries. Then as the process gets preempted, in the *monitor_sched_out* function, we create a new entry for the process, save the current time in *schedout_time*, record the name of the task that preempted the process, and instantiate the *on_core_time* and *wait_time* as follows:
 
 - *on_core_time* = current time - previous preempted entry's scheduled in time
 - *wait_time* = previous preempted entry's scheduled in time - previous preempted entry's scheduled out time
@@ -58,7 +58,7 @@ When we open the schedule monitor, we register the tracker as the head of the li
         [out			in]         [out			in]
     |******|			|**************|			|*************|
     |-------------------------------------------------------------------------------------|
-Treating a complete bracket as one node, we see that the wait time of the current node is previous entry's scheduled in time minus the previous entry's scheduled out time. The run time of the current node is current preempted time minus the previous entry's scheduled in time. We append the node to the list. Then in the *monitor_sched_in* function as the process gets scheduled back in, we record the cpu number that it runs on in and record the scheduled in time.
+Treating a complete bracket as one node, we see that the wait time of the current node is previous entry's scheduled in time minus the previous entry's scheduled out time. The runtime of the current node is current preempted time minus the previous entry's scheduled in time. We append the node to the list. Then in the *monitor_sched_in* function as the process gets scheduled back in, we record the CPU number that it runs on in and record the scheduled in time.
 
 # # dmesg output
 > [ 1786.502343] sched_out for process monitor  
@@ -84,7 +84,7 @@ name:rs:main Q:Reg
 Monitor ran to completion!  
 
 # # Results
-When run with time command, without any other program running, the dense_mm program exists in ~30 seconds
+When running with time command, without any other program running, the dense_mm program exists in ~30 seconds
 
 ### Example output of the matrix program:
 
@@ -120,7 +120,7 @@ num of migrations: 10
 total preemptions: 640  
 
 
-When *dense_mm* runs with other programs running, the process gets preempted more often, migration happens more, average runtime becomes smaller, and average wait time becomes bigger. When all four cores are reserved, the number of preemptions and the number of migrations increase. However, when priority is set so that the matrix program has higher priority, the program migrates less, gets preempted less (still more than when there are no programs running), and gets more average runtime. When there are programs running, the average wait time stays within the similar range.
+When *dense_mm* runs with other programs running, the process gets preempted more often, migration happens more, average runtime becomes smaller, and average wait time becomes bigger. When all four cores are reserved, the number of preemptions and the number of migrations increase. However, when priority is set so that the matrix program has higher priority, the program migrates less, gets preempted less (still more than when there are no programs running), and gets more average runtime. When there are programs running, the average wait time stays within a similar range.
 
 *rcu_preempt* happens around the first and end of the list. When the matrix size is below 200, the task doesn't appear. When it is above 300, the task appears. It seems like for a process to be preempted by this task the wait time is around 200000ns. We think that this task preempts a process once it starts waiting for too long.
 
@@ -153,7 +153,7 @@ avg wait time: 147339ns
 num of migrations: 14  
 total preemptions: 506  
 
-When the matrix program is run on 1000HZ-configured linux machine, the average runtime and the wait time is significantly smaller than that of the program run on 100HZ-configured machine. This is because on higher hertz kernel, a process gets preempted sooner, so the run time and wait time decreases.
+When the matrix program is run on a 1000HZ-configured Linux machine, the average runtime and the wait time is significantly smaller than that of the program run on a 100HZ-configured machine. This is because a process gets preempted sooner on higher hertz kernel, so the runtime and wait time decreases.
 
 # # Contributors
 
